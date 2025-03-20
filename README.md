@@ -1,102 +1,107 @@
-Write a program to perform the following operators on Strings without using String functions 
+7. An array of record contains information of managers and workers of a company. Print all the data  
+of managers and workers in separate files
 
-a. To find the Length of String. 
-
-b. To concatenate two string. 
-
-c. To find Reverse of a string. 
-
-d. To copy one string to another string.
+//program 
 
 #include <stdio.h>
+#include <string.h>
 
-// Function to calculate length of string
-int findLength(char str[]) {
-    int i = 0;
-    while (str[i] != '\0') {
-        i++;
-    }
-    return i;
-}
-
-// Function to concatenate two strings
-void concatenate(char str1[], char str2[], char result[]) {
-    int i = 0, j = 0;
-    
-    // Copy first string to result
-    while (str1[i] != '\0') {
-        result[i] = str1[i];
-        i++;
-    }
-    
-    // Copy second string to result
-    while (str2[j] != '\0') {
-        result[i] = str2[j];
-        i++;
-        j++;
-    }
-    result[i] = '\0'; // Add null character at the end
-}
-
-// Function to reverse a string
-void reverseString(char str[], char rev[]) {
-    int len = findLength(str);
-    int i;
-    
-    for (i = 0; i < len; i++) {
-        rev[i] = str[len - i - 1];
-    }
-    rev[len] = '\0'; // Add null character
-}
-
-// Function to copy one string to another
-void copyString(char source[], char destination[]) {
-    int i = 0;
-    while (source[i] != '\0') {
-        destination[i] = source[i];
-        i++;
-    }
-    destination[i] = '\0'; // Add null character
-}
+// Structure to store employee data
+struct Employee {
+    char name[50];
+    char role[10]; // Manager or Worker
+    int age;
+    float salary;
+};
 
 int main() {
-    char str1[100], str2[100], result[200], rev[100], copy[100];
-    int length;
+    int n, i;
 
-    // Input for first string
-    printf("Enter first string: ");
-    scanf("%s", str1);
-    
-    // Input for second string
-    printf("Enter second string: ");
-    scanf("%s", str2);
+    // Array to store multiple employees
+    struct Employee emp[100];
 
-    // Finding length of first string
-    length = findLength(str1);
-    printf("\nLength of first string: %d", length);
+    // Input number of employees
+    printf("Enter the number of employees: ");
+    scanf("%d", &n);
 
-    // Concatenating strings
-    concatenate(str1, str2, result);
-    printf("\nConcatenated string: %s", result);
+    // Input employee details
+    for (i = 0; i < n; i++) {
+        printf("\nEnter details for employee %d:\n", i + 1);
+        printf("Name: ");
+        scanf("%s", emp[i].name);
+        printf("Role (Manager/Worker): ");
+        scanf("%s", emp[i].role);
+        printf("Age: ");
+        scanf("%d", &emp[i].age);
+        printf("Salary: ");
+        scanf("%f", &emp[i].salary);
+    }
 
-    // Reversing first string
-    reverseString(str1, rev);
-    printf("\nReversed string: %s", rev);
+    // Open files to write data
+    FILE *managerFile = fopen("managers.txt", "w");
+    FILE *workerFile = fopen("workers.txt", "w");
 
-    // Copying first string to another
-    copyString(str1, copy);
-    printf("\nCopied string: %s\n", copy);
+    // Check if files opened successfully
+    if (managerFile == NULL || workerFile == NULL) {
+        printf("Error opening file!\n");
+        return 1;
+    }
+
+    // Separate and write data to respective files
+    for (i = 0; i < n; i++) {
+        if (strcmp(emp[i].role, "Manager") == 0 || strcmp(emp[i].role, "manager") == 0) {
+            fprintf(managerFile, "Name: %s\nAge: %d\nSalary: %.2f\n\n", emp[i].name, emp[i].age, emp[i].salary);
+        } 
+        else if (strcmp(emp[i].role, "Worker") == 0 || strcmp(emp[i].role, "worker") == 0) {
+            fprintf(workerFile, "Name: %s\nAge: %d\nSalary: %.2f\n\n", emp[i].name, emp[i].age, emp[i].salary);
+        }
+    }
+
+    // Close files
+    fclose(managerFile);
+    fclose(workerFile);
+
+    printf("\nData successfully written to managers.txt and workers.txt.\n");
 
     return 0;
 }
 
 
-Output 
 
-Enter first string: hello
-Enter second string: world
+//Input 
 
-Length of first string: 5
-Concatenated string: helloworld
-Reversed string: olleh
-Copied string: hello
+Enter the number of employees: 3
+
+Enter details for employee 1:
+Name: John
+Role (Manager/Worker): Manager
+Age: 35
+Salary: 75000
+
+Enter details for employee 2:
+Name: Mike
+Role (Manager/Worker): Worker
+Age: 28
+Salary: 30000
+
+Enter details for employee 3:
+Name: Sarah
+Role (Manager/Worker): Worker
+Age: 25
+Salary: 28000
+
+
+//output 
+//managers.txt 
+Name: John
+Age: 35
+Salary: 75000.00
+
+//workers.txt
+Name: Mike
+Age: 28
+Salary: 30000.00
+
+Name: Sarah
+Age: 25
+Salary: 28000.00
